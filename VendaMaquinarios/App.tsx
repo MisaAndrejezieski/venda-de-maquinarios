@@ -1,22 +1,22 @@
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
+import { View, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './src/constants/colors';
 import { initDatabase } from './src/services/database';
 
-import CadastroClienteScreen from './src/screens/CadastroClienteScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import DashboardScreen from './src/screens/DashboardScreen';
 import CatalogoScreen from './src/screens/CatalogoScreen';
 import ClientesScreen from './src/screens/ClientesScreen';
-import DashboardScreen from './src/screens/DashboardScreen';
-import EstoqueScreen from './src/screens/EstoqueScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import NotaFiscalScreen from './src/screens/NotaFiscalScreen';
+import CadastroClienteScreen from './src/screens/CadastroClienteScreen';
+import PropostasScreen from './src/screens/PropostasScreen';
 import NovaPropostaScreen from './src/screens/NovaPropostaScreen';
 import NovaVendaScreen from './src/screens/NovaVendaScreen';
-import PropostasScreen from './src/screens/PropostasScreen';
 import VendasScreen from './src/screens/VendasScreen';
+import EstoqueScreen from './src/screens/EstoqueScreen';
+import NotaFiscalScreen from './src/screens/NotaFiscalScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -62,7 +62,7 @@ export default function App() {
           })}
         />
         <Stack.Screen name="Menu" component={MenuScreen} options={{ title: '📋 Menu' }} />
-        <Stack.Screen name="Catalogo" component={CatalogoScreen} options={{ title: '🏗️ Catálogo de Máquinas' }} />
+        <Stack.Screen name="Catalogo" component={CatalogoScreen} options={{ title: '🏗️ Catálogo' }} />
         <Stack.Screen name="Clientes" component={ClientesScreen} options={{ title: '👥 Clientes' }} />
         <Stack.Screen name="CadastroCliente" component={CadastroClienteScreen} options={{ title: '📝 Cadastrar Cliente' }} />
         <Stack.Screen name="Propostas" component={PropostasScreen} options={{ title: '📄 Propostas' }} />
@@ -76,7 +76,6 @@ export default function App() {
   );
 }
 
-// Tela de Menu simples
 function MenuScreen({ navigation }: any) {
   const menuItems = [
     { name: 'Dashboard', title: '🏠 Painel de Vendas', icon: 'grid' },
