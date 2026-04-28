@@ -1,28 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useWindowDimensions, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { Colors } from './src/constants/colors';
 import { initDatabase } from './src/services/database';
 
-import LoginScreen from './src/screens/LoginScreen';
-import DashboardScreen from './src/screens/DashboardScreen';
+import CadastroClienteScreen from './src/screens/CadastroClienteScreen';
 import CatalogoScreen from './src/screens/CatalogoScreen';
 import ClientesScreen from './src/screens/ClientesScreen';
-import CadastroClienteScreen from './src/screens/CadastroClienteScreen';
-import PropostasScreen from './src/screens/PropostasScreen';
+import DashboardScreen from './src/screens/DashboardScreen';
+import EstoqueScreen from './src/screens/EstoqueScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import NotaFiscalScreen from './src/screens/NotaFiscalScreen';
 import NovaPropostaScreen from './src/screens/NovaPropostaScreen';
 import NovaVendaScreen from './src/screens/NovaVendaScreen';
+import PropostasScreen from './src/screens/PropostasScreen';
 import VendasScreen from './src/screens/VendasScreen';
-import EstoqueScreen from './src/screens/EstoqueScreen';
-import NotaFiscalScreen from './src/screens/NotaFiscalScreen';
 
-const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
+
+const screenOptions = {
+  headerStyle: { backgroundColor: Colors.primary },
+  headerTintColor: Colors.white,
+  headerTitleStyle: { fontWeight: 'bold' as const, fontSize: 18 },
+};
 
 export default function App() {
-  const { width } = useWindowDimensions();
-  const isTablet = width >= 768;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dbReady, setDbReady] = useState(false);
 
@@ -44,26 +48,66 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        screenOptions={{
-          drawerType: isTablet ? 'permanent' : 'front',
-          drawerStyle: { width: isTablet ? 300 : 260, backgroundColor: Colors.surface },
-          headerStyle: { backgroundColor: Colors.primary },
-          headerTintColor: Colors.white,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 18 },
-        }}
-      >
-        <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ title: '🏠 Painel de Vendas', drawerIcon: ({ color, size }) => <Ionicons name="grid" size={size} color={color} /> }} />
-        <Drawer.Screen name="Catalogo" component={CatalogoScreen} options={{ title: '🏗️ Catálogo de Máquinas', drawerIcon: ({ color, size }) => <Ionicons name="construct" size={size} color={color} /> }} />
-        <Drawer.Screen name="Clientes" component={ClientesScreen} options={{ title: '👥 Clientes', drawerIcon: ({ color, size }) => <Ionicons name="people" size={size} color={color} /> }} />
-        <Drawer.Screen name="CadastroCliente" component={CadastroClienteScreen} options={{ title: '📝 Cadastrar Cliente', drawerItemStyle: { display: 'none' } }} />
-        <Drawer.Screen name="Propostas" component={PropostasScreen} options={{ title: '📄 Propostas', drawerIcon: ({ color, size }) => <Ionicons name="document-text" size={size} color={color} /> }} />
-        <Drawer.Screen name="NovaProposta" component={NovaPropostaScreen} options={{ title: '📝 Nova Proposta', drawerItemStyle: { display: 'none' } }} />
-        <Drawer.Screen name="NovaVenda" component={NovaVendaScreen} options={{ title: '💰 Nova Venda', drawerIcon: ({ color, size }) => <Ionicons name="cart" size={size} color={color} /> }} />
-        <Drawer.Screen name="Vendas" component={VendasScreen} options={{ title: '📊 Vendas Realizadas', drawerIcon: ({ color, size }) => <Ionicons name="cash" size={size} color={color} /> }} />
-        <Drawer.Screen name="Estoque" component={EstoqueScreen} options={{ title: '📦 Estoque', drawerIcon: ({ color, size }) => <Ionicons name="cube" size={size} color={color} /> }} />
-        <Drawer.Screen name="NotaFiscal" component={NotaFiscalScreen} options={{ title: '🧾 Notas Fiscais', drawerIcon: ({ color, size }) => <Ionicons name="receipt" size={size} color={color} /> }} />
-      </Drawer.Navigator>
+      <Stack.Navigator screenOptions={screenOptions}>
+        <Stack.Screen
+          name="Dashboard"
+          component={DashboardScreen}
+          options={({ navigation }) => ({
+            title: '🏠 Painel de Vendas',
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => navigation.navigate('Menu')} style={{ marginLeft: 10 }}>
+                <Ionicons name="menu" size={26} color={Colors.white} />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+        <Stack.Screen name="Menu" component={MenuScreen} options={{ title: '📋 Menu' }} />
+        <Stack.Screen name="Catalogo" component={CatalogoScreen} options={{ title: '🏗️ Catálogo de Máquinas' }} />
+        <Stack.Screen name="Clientes" component={ClientesScreen} options={{ title: '👥 Clientes' }} />
+        <Stack.Screen name="CadastroCliente" component={CadastroClienteScreen} options={{ title: '📝 Cadastrar Cliente' }} />
+        <Stack.Screen name="Propostas" component={PropostasScreen} options={{ title: '📄 Propostas' }} />
+        <Stack.Screen name="NovaProposta" component={NovaPropostaScreen} options={{ title: '📝 Nova Proposta' }} />
+        <Stack.Screen name="NovaVenda" component={NovaVendaScreen} options={{ title: '💰 Nova Venda' }} />
+        <Stack.Screen name="Vendas" component={VendasScreen} options={{ title: '📊 Vendas Realizadas' }} />
+        <Stack.Screen name="Estoque" component={EstoqueScreen} options={{ title: '📦 Estoque' }} />
+        <Stack.Screen name="NotaFiscal" component={NotaFiscalScreen} options={{ title: '🧾 Notas Fiscais' }} />
+      </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+
+// Tela de Menu simples
+function MenuScreen({ navigation }: any) {
+  const menuItems = [
+    { name: 'Dashboard', title: '🏠 Painel de Vendas', icon: 'grid' },
+    { name: 'Catalogo', title: '🏗️ Catálogo de Máquinas', icon: 'construct' },
+    { name: 'Clientes', title: '👥 Clientes', icon: 'people' },
+    { name: 'Propostas', title: '📄 Propostas', icon: 'document-text' },
+    { name: 'NovaVenda', title: '💰 Nova Venda', icon: 'cart' },
+    { name: 'Vendas', title: '📊 Vendas Realizadas', icon: 'cash' },
+    { name: 'Estoque', title: '📦 Estoque', icon: 'cube' },
+    { name: 'NotaFiscal', title: '🧾 Notas Fiscais', icon: 'receipt' },
+  ];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: Colors.background, padding: 16 }}>
+      {menuItems.map((item) => (
+        <TouchableOpacity
+          key={item.name}
+          style={{
+            backgroundColor: Colors.surface,
+            padding: 16,
+            borderRadius: 12,
+            marginBottom: 8,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+          onPress={() => navigation.navigate(item.name)}
+        >
+          <Ionicons name={item.icon as any} size={24} color={Colors.primary} />
+          <Text style={{ fontSize: 16, marginLeft: 12, color: Colors.text }}>{item.title}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 }
