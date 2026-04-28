@@ -9,6 +9,8 @@ export const Colors = {
   text: '#212121',
   textSecondary: '#757575',
   border: '#e0e0e0',
+  gray: '#9e9e9e',
+  lightGray: '#f5f5f5',
   white: '#ffffff',
   black: '#000000',
 };
